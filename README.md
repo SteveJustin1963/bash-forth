@@ -4,57 +4,45 @@ bash in forth
 
 ## grep
 
-basic version of the `grep` functionality found in Unix-based systems. The `grep` command is used to search text for lines that match a given regular expression. This program is a simplified version and does not support regular expressions, but it allows for text searching within files.
+Certainly! Here's the complete modified program:
 
-The three words defined in the program are `grep-file`, `grep-directory`, and `grep`:
+```forth
+variable file-string  \ Variable to store the string
 
-1. `grep-file` takes a pattern and a filename as input. It attempts to open the given file and read it line by line, looking for the provided pattern. If the pattern is found in a line, it prints "Match found: " along with the line that contains the pattern. If the file can't be opened, it prints "Error: File not found".
+: set-file-string ( str -- )  \ Store a string in the file-string variable
+  file-string !
+;
 
-2. `grep-directory` takes a pattern and a directory name as input. It reads all the filenames in the given directory and applies `grep-file` to each file. Essentially, it searches for the given pattern in all files within the specified directory.
+: grep-string ( pattern -- )  \ Search for a pattern in the file-string variable
+  file-string @   \ Fetch the string from the file-string variable
+  over search 0< if
+    drop
+    ." Match found: " type cr
+  else
+    drop
+    ." No match found." cr
+  then
+;
 
-3. `grep` takes a pattern and an optional directory name as input. If no directory name is provided, it just drops the top two stack items (which were duplicates of the pattern and the nonexistent directory name). If a directory name is provided, it calls `grep-directory` to search for the given pattern in all files within the specified directory.
+: grep ( pattern -- )  \ Main function to set the string and perform the search
+  set-file-string
+  grep-string
+;
 
+: main  \ Example usage
+  ." Enter a string: "  \ Prompt for input
+  50 input-line drop     \ Read a line of input (up to 50 characters) and drop the newline character
+  set-file-string       \ Store the input string
+  cr                    \ Move to a new line
 
+  ." Enter a pattern to search for: "  \ Prompt for input
+  50 input-line drop                    \ Read a line of input (up to 50 characters) and drop the newline character
+  grep                                 \ Search for the pattern within the stored string
+;
 
+main  \ Call the main function to start the program
 ```
-: grep-file ( pattern filename -- )   \ A new function 'grep-file' that takes a pattern and a filename
-  s" r" open-file if                 \ Opens the file with read permission; if successful
-    begin
-      dup file-status 0= until       \ Keep duplicating the top stack item and check file status until it's 0 (end of file)
-      begin
-        dup file-status while        \ While the file status is non-zero (not end of file)
-        0 0
-        begin
-          over read-line while       \ Keep reading a line from the file while it's possible
-          2dup swap search 0< if     \ Search for the pattern in the line; if found (0<)
-            drop                     \ Drop the top stack item
-            ." Match found: " type cr \ Print 'Match found: ' followed by the content of the line
-          then
-        repeat
-        2drop close-file             \ Close the file and drop the two top stack items
-      repeat
-      drop
-    else                             \ If the file couldn't be opened
-      ." Error: File not found" cr   \ Print 'Error: File not found'
-    then ;
 
-: grep-directory ( pattern dirname -- ) \ A new function 'grep-directory' that takes a pattern and a directory name
-  dir>files                           \ Convert directory to a sequence of filenames
-  begin
-    s" " swap strcat                  \ Concatenate the filename with a space
-    dup file-status 0= until          \ Check file status until it's 0 (end of file)
-    begin
-      2dup grep-file                  \ Use 'grep-file' function on the pattern and filename
-      2drop
-    repeat
-    drop ;
+In this program, the `set-file-string` word is used to store a string in the `file-string` variable. The `grep-string` word searches for a pattern within the stored string and displays the result. The `grep` word combines both operations and is the main entry point for searching.
 
-: grep ( pattern [dirname] -- )       \ A new function 'grep' that takes a pattern and an optional directory name
-  2dup 2>r 2>r                        \ Duplicate the two top stack items and move them to the return stack
-  case
-    of 2drop 2drop                    \ If no directory name is provided, drop the two top stack items
-    endof
-    else grep-directory               \ If a directory name is provided, call 'grep-directory' function
-  endcase
-  2r> 2r> ;                           \ Move the two top items from the return stack to the data stack
-```
+The `main` word provides an example usage of the program. It prompts for a string, stores it, prompts for a pattern to search for, and performs the search.
