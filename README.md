@@ -8,14 +8,19 @@ Certainly! Here's the complete modified program:
 
 ```forth
 variable file-string  \ Variable to store the string
+create pattern 256 allot \ Create a space to store the pattern
 
 : set-file-string ( str -- )  \ Store a string in the file-string variable
   file-string !
 ;
 
-: grep-string ( pattern -- )  \ Search for a pattern in the file-string variable
+: set-pattern ( str -- )  \ Store a pattern in the pattern variable
+  pattern place
+;
+
+: grep-string ( -- )  \ Search for a pattern in the file-string variable
   file-string @   \ Fetch the string from the file-string variable
-  over search 0< if
+  pattern count search 0< if
     drop
     ." Match found: " type cr
   else
@@ -24,7 +29,8 @@ variable file-string  \ Variable to store the string
   then
 ;
 
-: grep ( pattern -- )  \ Main function to set the string and perform the search
+: grep ( pattern str -- )  \ Main function to set the string and perform the search
+  set-pattern
   set-file-string
   grep-string
 ;
@@ -35,25 +41,30 @@ variable file-string  \ Variable to store the string
   ." Pattern: World" cr
   ." Searching..." cr
   ." -----------" cr
-  "Hello, World!" grep
+  "World" "Hello, World!" grep
 ;
 
 main  \ Call the main function to start the program
 
+
 ```
 
-Certainly! Here's an explanation of how the program works in point form:
+program introduces a new pattern variable that is used to store the pattern, and a new set-pattern word to set the value of this variable. The grep word is changed to take two arguments: the pattern and the string. The pattern is stored in the pattern variable, and the string is stored in the file-string variable. Then, grep-string is called to perform the search. main calls grep .
 
-1. The program defines a variable `file-string` to store a string.
-2. The word `set-file-string` takes a string input and stores it in the `file-string` variable.
-3. The word `grep-string` takes a pattern input and searches for that pattern within the `file-string` variable.
-4. If a match is found, it displays "Match found: " followed by the matched portion of the string.
-5. If no match is found, it displays "No match found."
-6. The word `grep` is the main entry point for the program. It sets the string using `set-file-string` and performs the search using `grep-string`.
-7. The `main` word provides an example usage of the program.
-8. It displays a hardcoded string "Hello, World!" and a hardcoded pattern "World".
-9. It then calls `grep` to search for the pattern within the stored string.
-10. The program output shows whether a match is found or not.
 
-So, when you run the program, it will display the hardcoded string and pattern, perform the search, and show the result indicating whether a match is found or not.
+## step-by-step breakdown of the program's operation:
+
+1. **Variable Declaration:** The program begins by declaring two variables: `file-string` and `pattern`. These variables serve as storage for the input string and the search pattern, respectively.
+
+2. **String and Pattern Storage Words:** The program defines two words, `set-file-string` and `set-pattern`, to store the input string and search pattern in their respective variables. 
+
+3. **String Search Word:** The word `grep-string` is defined. This word retrieves the stored input string and search pattern, then performs a search of the pattern within the string. It uses the Forth word `search` to carry out this operation, which pushes two stack items as a result: the remaining unsearched portion of the string and the number of characters left after finding the search pattern (or the original string length if no match was found). It then checks if a match was found and prints an appropriate message.
+
+4. **Main Search Word:** The word `grep` is defined, which serves as the main function for performing the search operation. It uses `set-pattern` and `set-file-string` to store the input parameters, then calls `grep-string` to perform the search.
+
+5. **Demonstration Procedure:** The `main` word is defined to demonstrate the program. It displays hardcoded string and pattern, performs the search operation using `grep`, and prints the search result. 
+
+6. **Program Execution:** The program is executed by calling the `main` word. The `main` word demonstrates the search operation using a hardcoded string "Hello, World!" and search pattern "World".
+
+The most important point to understand about this Forth program is that it uses a stack-based paradigm. This means that data (like strings and patterns) are pushed onto a stack and words (Forth's equivalent of functions or procedures) operate on this stack data. For instance, `set-file-string` and `set-pattern` expect their input on the top of the stack and store this input into variables. Similarly, `grep-string` operates on the data stored in these variables and `grep` operates on the top two elements of the stack.
 
