@@ -29,18 +29,17 @@ variable file-string  \ Variable to store the string
   grep-string
 ;
 
-: main  \ Example usage
-  ." Enter a string: "  \ Prompt for input
-  50 input-line drop     \ Read a line of input (up to 50 characters) and drop the newline character
-  set-file-string       \ Store the input string
-  cr                    \ Move to a new line
-
-  ." Enter a pattern to search for: "  \ Prompt for input
-  50 input-line drop                    \ Read a line of input (up to 50 characters) and drop the newline character
-  grep                                 \ Search for the pattern within the stored string
+\ Hardcoded string and pattern for demonstration
+: main
+  ." String: Hello, World!" cr
+  ." Pattern: World" cr
+  ." Searching..." cr
+  ." -----------" cr
+  "Hello, World!" grep
 ;
 
 main  \ Call the main function to start the program
+
 ```
 
 In this program, the `set-file-string` word is used to store a string in the `file-string` variable. The `grep-string` word searches for a pattern within the stored string and displays the result. The `grep` word combines both operations and is the main entry point for searching.
