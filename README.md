@@ -3,6 +3,19 @@ bash in forth
 
 
 ## grep
+
+basic version of the `grep` functionality found in Unix-based systems. The `grep` command is used to search text for lines that match a given regular expression. This program is a simplified version and does not support regular expressions, but it allows for text searching within files.
+
+The three words defined in the program are `grep-file`, `grep-directory`, and `grep`:
+
+1. `grep-file` takes a pattern and a filename as input. It attempts to open the given file and read it line by line, looking for the provided pattern. If the pattern is found in a line, it prints "Match found: " along with the line that contains the pattern. If the file can't be opened, it prints "Error: File not found".
+
+2. `grep-directory` takes a pattern and a directory name as input. It reads all the filenames in the given directory and applies `grep-file` to each file. Essentially, it searches for the given pattern in all files within the specified directory.
+
+3. `grep` takes a pattern and an optional directory name as input. If no directory name is provided, it just drops the top two stack items (which were duplicates of the pattern and the nonexistent directory name). If a directory name is provided, it calls `grep-directory` to search for the given pattern in all files within the specified directory.
+
+
+
 ```
 : grep-file ( pattern filename -- )   \ A new function 'grep-file' that takes a pattern and a filename
   s" r" open-file if                 \ Opens the file with read permission; if successful
