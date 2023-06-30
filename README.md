@@ -4,7 +4,7 @@ bash in forth
 
 ## grep
 
-Certainly! Here's the complete modified program:
+ 
 
 ```forth
 variable file-string  \ Variable to store the string
