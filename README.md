@@ -1,5 +1,4 @@
-# tec-bash-forth
-bash in forth
+# bash in forth
 
 
 ## grep
